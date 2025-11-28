@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snow Key System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #5f9ea0;
+            --primary-dark: #4a7a7c;
+            --secondary: #151515;
+            --accent: #5f9ea0;
+            --light: #2a2a2a;
+            --dark: #ffffff;
+            --success: #5f9ea0;
+            --warning: #5f9ea0;
+            --danger: #5f9ea0;
+            --gray: #8a8a8a;
+            --bg: #151515;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #151515;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: #1a1a1a;
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+            width: 100%;
+            max-width: 750px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #5f9ea0;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .header h1 {
+            color: #ffffff;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .header h1 i {
+            color: #5f9ea0;
+        }
+        
+        .header p {
+            color: #8a8a8a;
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+        }
+        
+        .creator {
+            font-size: 0.9rem;
+            color: #8a8a8a;
+            font-style: italic;
+        }
+        
+        .key-display-container {
+            background: #222222;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+            border: 2px dashed #5f9ea0;
+            transition: all 0.3s ease;
+        }
+        
+        .key-display-container:hover {
+            border-color: #5f9ea0;
+            box-shadow: inset 0 2px 15px rgba(0, 0, 0, 0.4), 0 0 20px rgba(95, 158, 160, 0.2);
+        }
+        
+        .key-label {
+            font-size: 0.9rem;
+            color: #8a8a8a;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .key-display {
+            font-family: 'Courier New', monospace;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #5f9ea0;
+            text-align: center;
+            padding: 15px;
+            background: #1a1a1a;
+            border-radius: 10px;
+            word-break: break-all;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .key-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            color: #8a8a8a;
+        }
+        
+        .expiry-info {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn {
+            padding: 14px 25px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-primary {
+            background: #5f9ea0;
+            color: #151515;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 158, 160, 0.4);
+            background: #6aafb1;
+        }
+        
+        .btn-success {
+            background: #5f9ea0;
+            color: #151515;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 158, 160, 0.4);
+            background: #6aafb1;
+        }
+        
+        .btn-secondary {
+            background: #2a2a2a;
+            color: #5f9ea0;
+            border: 1px solid #5f9ea0;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(95, 158, 160, 0.3);
+            background: #333333;
+        }
+        
+        .btn:disabled {
+            background: #2a2a2a;
+            color: #4a4a4a;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .status {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            align-items: center;
+            gap: 10px;
+            background: #222222;
+        }
+        
+        .success {
+            color: #5f9ea0;
+            border-left: 4px solid #5f9ea0;
+        }
+        
+        .error {
+            color: #5f9ea0;
+            border-left: 4px solid #5f9ea0;
+        }
+        
+        .loading {
+            color: #5f9ea0;
+            border-left: 4px solid #5f9ea0;
+        }
+        
+        .warning {
+            color: #5f9ea0;
+            border-left: 4px solid #5f9ea0;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #2a2a2a;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #5f9ea0;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #8a8a8a;
+        }
+        
+        .rate-limit-info {
+            background: #222222;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #2a2a2a;
+        }
+        
+        .rate-limit-text {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            color: #8a8a8a;
+        }
+        
+        .rate-limit-bar {
+            flex-grow: 1;
+            height: 8px;
+            background: #1a1a1a;
+            border-radius: 4px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+        
+        .rate-limit-progress {
+            height: 100%;
+            background: #5f9ea0;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #8a8a8a;
+            font-size: 0.9rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .shake {
+            animation: shake 0.5s;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .key-display {
+                font-size: 1.1rem;
+            }
+            
+            .buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .key-info {
+                flex-direction: column;
+                gap: 10px;
+                align-items: center;
+            }
+            
+            .rate-limit-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .rate-limit-bar {
+                width: 100%;
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-snowflake"></i> Snow Key System</h1>
+            <p>Generate random keys with 1-day validity</p>
+            <p class="creator">Creator: oRee Scripter</p>
+        </div>
+        
+        <div class="key-display-container">
+            <div class="key-label">
+                <i class="fas fa-key"></i> YOUR GENERATED KEY
+            </div>
+            <div class="key-display" id="keyDisplay">
+                Click "Generate Key" to start
+            </div>
+            <div class="key-info">
+                <div class="expiry-info">
+                    <i class="fas fa-clock"></i>
+                    <span>Expires in: <span id="expiryTime">24:00:00</span></span>
+                </div>
+                <div>
+                    <i class="fas fa-fingerprint"></i>
+                    <span>Key ID: <span id="keyId">-</span></span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="buttons">
+            <button class="btn btn-primary" onclick="generateKey()" id="generateBtn">
+                <i class="fas fa-sync-alt"></i> Generate Key
+            </button>
+            <button class="btn btn-success" onclick="saveToPastefy()" id="saveBtn" disabled>
+                <i class="fas fa-cloud-upload-alt"></i> Register Key (REQUIRED)
+            </button>
+            <button class="btn btn-secondary" onclick="copyKey()" id="copyBtn" disabled>
+                <i class="fas fa-copy"></i> Copy Key
+            </button>
+        </div>
+        
+        <div class="rate-limit-info">
+            <div class="rate-limit-text">
+                <i class="fas fa-tachometer-alt"></i>
+                <span>Rate Limit:</span>
+            </div>
+            <div class="rate-limit-bar">
+                <div class="rate-limit-progress" id="rateLimitProgress" style="width: 0%"></div>
+            </div>
+            <div class="rate-limit-text">
+                <span id="rateLimitText">0/5 keys registered today</span>
+            </div>
+        </div>
+        
+        <div class="status" id="status"></div>
+        
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="keysGenerated">0</div>
+                <div class="stat-label">Keys Generated</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="keysRegistered">0</div>
+                <div class="stat-label">Keys Registered</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="successRate">100%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Snow Key System &copy; 2025 | Secure Key Generation</p>
+        </div>
+    </div>
+
+    <script>
+        let currentKey = '';
+        let keysGenerated = 0;
+        let keysRegistered = 0;
+        let keyExpiry = null;
+        let expiryTimer = null;
+        let rateLimitCount = 0;
+        const RATE_LIMIT_MAX = 5;
+        
+        // Load rate limit from localStorage
+        function loadRateLimit() {
+            const today = new Date().toDateString();
+            const stored = localStorage.getItem('snowKeyRateLimit');
+            
+            if (stored) {
+                const data = JSON.parse(stored);
+                if (data.date === today) {
+                    rateLimitCount = data.count;
+                } else {
+                    rateLimitCount = 0;
+                    saveRateLimit();
+                }
+            }
+            
+            updateRateLimitDisplay();
+        }
+        
+        // Save rate limit to localStorage
+        function saveRateLimit() {
+            const today = new Date().toDateString();
+            const data = {
+                date: today,
+                count: rateLimitCount
+            };
+            localStorage.setItem('snowKeyRateLimit', JSON.stringify(data));
+            updateRateLimitDisplay();
+        }
+        
+        // Update rate limit display
+        function updateRateLimitDisplay() {
+            const progress = document.getElementById('rateLimitProgress');
+            const text = document.getElementById('rateLimitText');
+            const percentage = (rateLimitCount / RATE_LIMIT_MAX) * 100;
+            
+            progress.style.width = `${percentage}%`;
+            
+            if (rateLimitCount >= RATE_LIMIT_MAX) {
+                progress.style.background = '#5f9ea0';
+                text.innerHTML = `<i class="fas fa-exclamation-triangle"></i> Limit reached (${rateLimitCount}/${RATE_LIMIT_MAX})`;
+            } else if (rateLimitCount >= RATE_LIMIT_MAX * 0.8) {
+                progress.style.background = '#5f9ea0';
+                text.innerHTML = `<i class="fas fa-info-circle"></i> ${rateLimitCount}/${RATE_LIMIT_MAX} keys registered today`;
+            } else {
+                progress.style.background = '#5f9ea0';
+                text.innerHTML = `<i class="fas fa-check-circle"></i> ${rateLimitCount}/${RATE_LIMIT_MAX} keys registered today`;
+            }
+        }
+        
+        // Check if rate limit is exceeded
+        function isRateLimitExceeded() {
+            return rateLimitCount >= RATE_LIMIT_MAX;
+        }
+        
+        // Generate a random key ID
+        function generateKeyId() {
+            return Math.random().toString(36).substring(2, 10).toUpperCase();
+        }
+        
+        // Start expiry countdown
+        function startExpiryCountdown() {
+            if (expiryTimer) {
+                clearInterval(expiryTimer);
+            }
+            
+            // Set expiry to 24 hours from now
+            keyExpiry = new Date();
+            keyExpiry.setHours(keyExpiry.getHours() + 24);
+            
+            updateExpiryDisplay();
+            
+            expiryTimer = setInterval(updateExpiryDisplay, 1000);
+        }
+        
+        // Update expiry display
+        function updateExpiryDisplay() {
+            if (!keyExpiry) return;
+            
+            const now = new Date();
+            const diff = keyExpiry - now;
+            
+            if (diff <= 0) {
+                document.getElementById('expiryTime').textContent = 'EXPIRED';
+                document.getElementById('expiryTime').style.color = '#5f9ea0';
+                clearInterval(expiryTimer);
+                return;
+            }
+            
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            
+            document.getElementById('expiryTime').textContent = 
+                `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            // Change color when less than 1 hour remaining
+            if (hours === 0) {
+                document.getElementById('expiryTime').style.color = '#5f9ea0';
+            } else {
+                document.getElementById('expiryTime').style.color = '#5f9ea0';
+            }
+        }
+        
+        function generateRandomKey(length = 32) {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            let result = '';
+            for (let i = 0; i < length; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+        
+        function generateKey() {
+            currentKey = generateRandomKey();
+            document.getElementById('keyDisplay').textContent = currentKey;
+            document.getElementById('saveBtn').disabled = false;
+            document.getElementById('copyBtn').disabled = false;
+            document.getElementById('keyId').textContent = generateKeyId();
+            hideStatus();
+            
+            // Start expiry countdown
+            startExpiryCountdown();
+            
+            // Update stats
+            keysGenerated++;
+            document.getElementById('keysGenerated').textContent = keysGenerated;
+            updateSuccessRate();
+            
+            // Add animation effect
+            const keyDisplay = document.getElementById('keyDisplay');
+            keyDisplay.classList.add('pulse');
+            setTimeout(() => {
+                keyDisplay.classList.remove('pulse');
+            }, 1500);
+        }
+        
+        function copyKey() {
+            navigator.clipboard.writeText(currentKey).then(() => {
+                showStatus('Key copied to clipboard!', 'success');
+            }).catch(err => {
+                showStatus('Error copying key: ' + err, 'error');
+            });
+        }
+        
+        async function saveToPastefy() {
+            // Check rate limit
+            if (isRateLimitExceeded()) {
+                showStatus('Rate limit exceeded! You can only register 5 keys per day.', 'error');
+                document.getElementById('saveBtn').classList.add('shake');
+                setTimeout(() => {
+                    document.getElementById('saveBtn').classList.remove('shake');
+                }, 500);
+                return;
+            }
+            
+            const generateBtn = document.getElementById('generateBtn');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            generateBtn.disabled = true;
+            saveBtn.disabled = true;
+            
+            showStatus('Registering key in the system...', 'loading');
+            
+            // Simulate API call (replace with actual fetch to your PHP script)
+            setTimeout(() => {
+                // For demo purposes, we'll simulate a successful registration
+                const isSuccess = Math.random() > 0.2; // 80% success rate for demo
+                
+                if (isSuccess) {
+                    showStatus('Key successfully registered in the system! Valid for 24 hours.', 'success');
+                    keysRegistered++;
+                    rateLimitCount++;
+                    saveRateLimit();
+                    document.getElementById('keysRegistered').textContent = keysRegistered;
+                } else {
+                    showStatus('Registration error: Please try again', 'error');
+                }
+                
+                updateSuccessRate();
+                generateBtn.disabled = false;
+                saveBtn.disabled = isRateLimitExceeded();
+                
+            }, 1500);
+        }
+        
+        function updateSuccessRate() {
+            if (keysGenerated === 0) {
+                document.getElementById('successRate').textContent = '100%';
+                return;
+            }
+            
+            const rate = Math.round((keysRegistered / keysGenerated) * 100);
+            document.getElementById('successRate').textContent = rate + '%';
+        }
+        
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            const icon = type === 'success' ? 'fas fa-check-circle' : 
+                         type === 'error' ? 'fas fa-exclamation-circle' : 
+                         type === 'warning' ? 'fas fa-exclamation-triangle' :
+                         'fas fa-sync-alt fa-spin';
+            
+            status.innerHTML = `<i class="${icon}"></i> ${message}`;
+            status.className = 'status ' + type;
+            status.style.display = 'flex';
+        }
+        
+        function hideStatus() {
+            document.getElementById('status').style.display = 'none';
+        }
+        
+        // Initialize the system
+        window.onload = function() {
+            loadRateLimit();
+            generateKey();
+        };
+    </script>
+</body>
+</html>
